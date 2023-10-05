@@ -31,7 +31,8 @@ function Chatbot() {
       <UserMessage key={messages.length + 1} text={text} />,
       <BotMessage
         key={messages.length + 2}
-        fetchMessage={async () => await API.GetChatbotResponse(text)}
+        fetchMessage={async () => await API.GetChatbotResponse(text)
+        }
       />
     );
     setMessages(newMessages);
@@ -48,3 +49,4 @@ function Chatbot() {
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(<Chatbot />, rootElement);
+export default Chatbot;
