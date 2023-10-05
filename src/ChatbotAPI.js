@@ -1,10 +1,11 @@
 import db from "./firebase_setup/firebase";
 
 const messagesList = [];
-
-const consoleShow = () => { 
-  console.log(messagesList.length);
-}
+const projects = []
+let id = '0000';
+// const consoleShow = () => { 
+//   console.log(messagesList.length);
+// }
 
 const API = {
   GetChatbotResponse: async message => {
@@ -33,12 +34,21 @@ const API = {
 
         } else if (lastBotMessage === "Who is the project manager?") {
           addProjectManager(message);
-          messagesList.push("Project created!");
-          sendToDatabase();
-          resolve("Project created!");
+          messagesList.push("Please provide project ID...");
+          resolve("Please provide project ID...");
     
+        } else if (lastBotMessage === "Please provide project ID...") {
+          addProjectID(message);
+          sendToDatabase();
+          messagesList.push("Project created!");
+          resolve("Project created!");
+
         } else if (message.includes("show")) {
-          resolve("Here are the projects: " + JSON.stringify(projects));
+          let ref = db.ref("/Projects");
+          ref.on("value", snapshot => {
+          const data = snapshot.val()
+          resolve("Here are the projects: " + JSON.stringify(data));
+          })
 
         } else {
           messagesList.push("Sorry. I cannot do that right now.\
@@ -52,23 +62,23 @@ const API = {
   }
 };
 
-const projects = []
-
 function addName(name) {
   projects.push({
-    name: {
-      projectName: name,
-      projectManager: ""
-    }
+    projectName: name,
+    projectManager: null
   });
 }
 
 function addProjectManager(name) {
-  //projects[projects.length - 1]. = name;
+  projects[projects.length - 1].projectManager = name;
+}
+
+function addProjectID(newID) {
+  id = newID;
 }
 
 function sendToDatabase() {
-  db.ref("Projects/").set(projects[projects.length - 1]);
+  db.ref("/Projects/ID".concat(id)).set(projects[projects.length - 1]);
 }
 
 export default API;
