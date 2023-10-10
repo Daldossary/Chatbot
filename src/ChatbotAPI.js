@@ -6,7 +6,7 @@ let id = '0000';
 // const consoleShow = () => { 
 //   console.log(messagesList.length);
 // }
-
+var prediction = 0;
 const API = {
   GetChatbotResponse: async message => {
     return new Promise(function(resolve) {
@@ -24,20 +24,36 @@ const API = {
           resolve("Bye! Have a nice day!");
 
         } else if (message.includes("predict") && message.includes("budget")) {
-          messagesList.push("Sure! Please provide me with the project type code...");
-          resolve("Sure! Please provide me with the project type code...")
+          messagesList.push("Sure! Please provide me with the project ID...");
+          resolve("Sure! Please provide me with the project ID...")
         
         } else if (lastBotMessage === "Sure! Please provide me with the project ID...") {
-          // let response = (() => {fetch('http://localhost:8080?param1=3&param2=4200000')
-          // .then(response => response.json())
-          // .then(data => console.log(data))
-          // .catch((error) => {
-          // console.error('Error:', error);
-          // })});
 
+          let url = 'http://localhost:8080?param1='
+          let type = null, cost = null;
+          let ref = db.ref("/Projects/ID".concat(message));
+                  ref.on("value", snapshot => {
+                  const data = snapshot.val();
+                  type = data.projectType;
+                  cost = data.projectEstimatedCost;
+                  console.log(type);
+                  console.log(cost);
+        
+                  url = url + type + '&param2=' + cost;
+                  console.log(url);
+        
+                  fetch(url)
+                  .then(response => response.json())
+                  .then(data => { prediction = data['prediction'];console.log(prediction); 
+                  resolve("The estimated budget for this project is: " + parseInt(prediction) + " dollars.")})
+                  .catch((error) => {
+                  console.error('Error:', error);
+                  });
+                  });
           //messagesList.push("The estimated budget for this project is: " + JSON.stringify(data) + " dollars.");
           //resolve("The estimated budget for this project is: " + JSON.stringify(data) + " dollars.");
-          resolve("The estimated budget for this project is: 4200000 dollars.");
+          //resolve("The estimated budget for this project is: 4200000 dollars.");
+          // let prediction = 5;
         } else if (message.includes("project") && message.includes("create")) {
           messagesList.push("What is the name of the project?");
           resolve("What is the name of the project?");
@@ -113,8 +129,34 @@ function addProjectID(newID) {
   id = newID;
 }
 
-function addEstimatedBudget(projectID) {
+function addEstimatedBudget(projectID, data) {
+  console.log(data);
+  console.log(data['prediction']);
+  return data['prediction'];
+}
 
+function predictBudget(projectID) {
+  let url = 'http://localhost:8080?param1='
+  let type = null, cost = null;
+  let ref = db.ref("/Projects/ID".concat(projectID));
+          ref.on("value", snapshot => {
+          const data = snapshot.val();
+          type = data.projectType;
+          cost = data.projectEstimatedCost;
+          console.log(type);
+          console.log(cost);
+
+          url = url + type + '&param2=' + cost;
+          console.log(url);
+
+          fetch(url)
+          .then(response => response.json())
+          .then(data => { prediction = data['prediction'];console.log(prediction);})
+          .catch((error) => {
+          console.error('Error:', error);
+          });
+          // return data['prediction']
+          });
 }
 
 function sendToDatabase() {
