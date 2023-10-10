@@ -6,11 +6,11 @@ import numpy as np
 import seaborn as sns 
 from sklearn.model_selection import train_test_split 
 from sklearn.linear_model import LinearRegression 
-from flask import Flask, make_response, request, jsonify
+import pickle
 
 np.set_printoptions(precision=2)
 
-data = pd.read_csv('./data.csv')
+data = pd.read_csv('C:\\Users\\panda\\OneDrive\\Documents\\PCDocs\\KPMG\\.vscode\\Chatbot\\src\\python_script\\data.csv')
 
 #data one hot encoding 
 data['project_type'] = data['project_type'].astype('category')
@@ -68,24 +68,7 @@ plt.ylabel('Predictions')
 accuracy = model.score(x_test, y_test)
 # print('accuracy: ', int(accuracy*100))
 
-# Connecting app to AI predictions
-
-app = Flask(__name__)
-
-@app.route('/', methods=['GET'])
-def home():
-    type = ''
-    estimated_cost = 0
-    response = make_response(Flask.jsonify({'message': 'Hello, World!'}), 200)
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    # You can access the parameters of the GET request with request.args
-    param1 = request.args.get('param1', type)
-    param2 = request.args.get('param2', estimated_cost)
-    param2 = float(param2)
-    prediction = model.predict([[param1, param2]])
-    prediction = Flask.jsonify({'prediction': prediction[0][0]})
-    response = make_response(prediction, 200)
-    return response
-
-if __name__ == '__main__':
-    app.run(debug=True)
+#export model
+with open('C:\\Users\\panda\\OneDrive\\Documents\\PCDocs\\KPMG\\.vscode\\Chatbot\\src\\python_script\\budgetEstimation.pkl', 'wb') as f:
+    pickle.dump(model, f)
+    print("model dumped!")

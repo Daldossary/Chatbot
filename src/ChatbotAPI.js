@@ -21,13 +21,13 @@ const API = {
         } else if (message === "bye" || message === "goodbye") {
           messagesList.push("Bye! Have a nice day!");
           //resolve("Bye! Have a nice day!");
-          resolve(fetch('http://localhost:8080?param1=PRE-K&param2=4200000',
-          { mode: 'no-cors' })
-          .then(response => response.json())
-          .then(data => console.log(data))
-          .catch((error) => {
-          console.error('Error:', error);
-          }));
+          resolve(
+            fetch('http://localhost:8080?param1=3&param2=4200000')
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch((error) => {
+            console.error('Error:', error);
+            }));
         } else if (message.includes("project") && message.includes("create")) {
           messagesList.push("What is the name of the project?");
           resolve("What is the name of the project?");
