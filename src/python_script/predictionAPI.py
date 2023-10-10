@@ -20,10 +20,7 @@ def get():
     print(type(param1), type(param2))
     prediction = model.predict([[param1, param2]])
     prediction = prediction[0][0]
-    # data = {'prediction': prediction}
-    print("PRINTING: ", prediction)
-    #return jsonify(data)
-    return jsonify({'message': prediction})
+    return jsonify({'prediction': prediction})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
