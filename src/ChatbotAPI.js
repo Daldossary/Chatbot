@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import db from "./firebase_setup/firebase";
 
 const messagesList = [];
@@ -22,7 +21,8 @@ const API = {
         } else if (message === "bye" || message === "goodbye") {
           messagesList.push("Bye! Have a nice day!");
           //resolve("Bye! Have a nice day!");
-          resolve(fetch('http://localhost:5000?param1=PRE-K&param2=4200000')
+          resolve(fetch('http://localhost:8080?param1=PRE-K&param2=4200000',
+          { mode: 'no-cors' })
           .then(response => response.json())
           .then(data => console.log(data))
           .catch((error) => {
