@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import db from "./firebase_setup/firebase";
 
 const messagesList = [];
@@ -18,11 +19,15 @@ const API = {
         if (message === "hi" || message === "hello") {
           messagesList.push("Welcome to Chatbot! How can I help you?");
           resolve("Welcome to Chatbot! How can I help you?");
-
         } else if (message === "bye" || message === "goodbye") {
           messagesList.push("Bye! Have a nice day!");
-          resolve("Bye! Have a nice day!");
-
+          //resolve("Bye! Have a nice day!");
+          resolve(fetch('http://localhost:5000?param1=PRE-K&param2=4200000')
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch((error) => {
+          console.error('Error:', error);
+          }));
         } else if (message.includes("project") && message.includes("create")) {
           messagesList.push("What is the name of the project?");
           resolve("What is the name of the project?");
