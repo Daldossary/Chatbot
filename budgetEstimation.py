@@ -6,7 +6,7 @@ import numpy as np
 import seaborn as sns 
 from sklearn.model_selection import train_test_split 
 from sklearn.linear_model import LinearRegression 
-from sklearn.metrics import mean_squared_error, mean_absolute_error 
+from flask import Flask, request
 
 np.set_printoptions(precision=2)
 
@@ -68,5 +68,20 @@ plt.ylabel('Predictions')
 accuracy = model.score(x_test, y_test)
 # print('accuracy: ', int(accuracy*100))
 
-def main(type, estimated_cost):
-    return model.predict([[type, estimated_cost]])
+# Connecting app to AI predictions
+
+app = Flask(__name__)
+
+@app.route('/', methods=['GET'])
+def home():
+    type = ''
+    estimated_cost = 0
+    # You can access the parameters of the GET request with request.args
+    param1 = request.args.get('param1', type)
+    param2 = request.args.get('param2', estimated_cost)
+    param2 = float(param2)
+    
+    return model.predict([[param1, param2]])
+
+if __name__ == '__main__':
+    app.run(debug=True)
